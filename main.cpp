@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <unistd.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -28,8 +29,37 @@ bool is_transpose(const Matrix& A, const Matrix& B) {
     return true;
 }
 
-int main() {
-    Matrix A(500, vector<int>(500, 1));
+void printHelp() {
+    printf("Usage: ./program_name [-m rows] [-n cols] [-h]\n");
+    printf("Options:\n");
+    printf("  -m <rows>   Specify the number of rows in the matrix.\n");
+    printf("  -n <cols>   Specify the number of columns in the matrix.\n");
+    printf("  -h          Display this help message.\n");
+}
+
+int main(int argc, char* argv[]) {
+    int opt, m, n;
+    while ((opt = getopt(argc, argv, "m:n:h")) != -1) {
+        switch(opt) {
+            case 'h':
+                printHelp();
+                return 0;
+            case 'm':
+                m = atoi(optarg);
+                break;
+            case 'n':
+                n = atoi(optarg);
+                break;
+            case ':':
+                printf("Missing argument for option: %c\n", (char)optopt);
+                return 1;
+            default:
+                printf("Use -h or --help for usage information.\n");
+                return 1;
+        }
+    }
+
+    Matrix A(m, vector<int>(n));
     for (int i = 0; i < A.size(); i++) {
         for (int j = 0; j < A[0].size(); j++) {
             A[i][j] = i * A.size() + j;
