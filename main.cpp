@@ -3,12 +3,10 @@
 #include <chrono>
 #include <unistd.h>
 #include <thread>
-#include <transpose.h>
+#include "transpose.h"
 
 using namespace std;
 using namespace std::chrono;
-
-using Matrix = vector<vector<int>>;
 
 void printHelp() {
     printf("Usage: ./program_name [-m rows] [-n cols] [-h]\n");
@@ -81,5 +79,6 @@ int main(int argc, char* argv[]) {
 
     duration = duration_cast<milliseconds>(stop - start);
     printf("Multithreaded: %d ms\n", duration.count());
+    
     return 0;
 }
