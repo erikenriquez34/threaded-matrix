@@ -1,5 +1,5 @@
 #executable
-main
+/[^.]*
 
 #vscode
 .vscode
