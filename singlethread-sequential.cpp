@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "transpose.h"
 
 using namespace std;
@@ -15,8 +16,32 @@ Matrix transpose_sequential(const Matrix& A, bool verbose) {
     return B;
 }
 
-int main() {
-    Matrix A = transpose_buildMatrix(1000, 1000, true);
-    Matrix B = transpose_time(transpose_sequential, A, true, "Singlethread Sequential");
+int main(int argc, char* argv[]) {
+    int opt, y, x;
+    bool verbose = false;
+
+    while ((opt = getopt(argc, argv, "y:x:v")) != -1) {
+        switch(opt) {
+            case 'y':
+                y = atoi(optarg);
+                break;
+            case 'x':
+                x = atoi(optarg);
+                break;
+            case 'v':
+                verbose = true;
+                break;
+            case ':':
+                printf("Missing argument for option: %c\n", (char)optopt);
+                return 1;
+            default:
+                printf("Missing arguements.\n");
+                return 1;
+        }
+    }
+
+    Matrix A = transpose_buildMatrix(y, x, verbose);
+    if (!A.empty()) {Matrix B = transpose_time(transpose_sequential, A, true, "Singlethread Sequential");}
+
     return 0;
 }

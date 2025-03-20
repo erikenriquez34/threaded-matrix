@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include <thread>
 #include "transpose.h"
 
@@ -23,13 +24,15 @@ Matrix transpose_multithreaded(const Matrix& A, bool verbose) {
     vector<thread> pool;
     int column_chunk = A[0].size() / threads;
     
+    printf("[VERBOSE] ");
     for (int t = 0; t < threads; t++) {
         int start = t * column_chunk;
         int end = (t == threads - 1) ? A[0].size() : (t + 1) * column_chunk;
 
-        if (verbose) printf("[VERBOSE] Thread %d assigned along rows [%d, %d].\n", (t+1), start, end);
+        if (verbose) printf("Thread %d: [%d, %d), ", (t+1), start, end);
         pool.emplace_back(transpose_worker, cref(A), ref(B), start, end);
     }
+    printf("\n");
 
     for (auto& th : pool) {
         th.join();
@@ -38,8 +41,32 @@ Matrix transpose_multithreaded(const Matrix& A, bool verbose) {
     return B;
 }
 
-int main() {
-    Matrix A = transpose_buildMatrix(1000, 1000, true);
-    Matrix B = transpose_time(transpose_multithreaded, A, true, "Multithreaded Assign");
+int main(int argc, char* argv[]) {
+    int opt, y, x;
+    bool verbose = false;
+
+    while ((opt = getopt(argc, argv, "y:x:v")) != -1) {
+        switch(opt) {
+            case 'y':
+                y = atoi(optarg);
+                break;
+            case 'x':
+                x = atoi(optarg);
+                break;
+            case 'v':
+                verbose = true;
+                break;
+            case ':':
+                printf("Missing argument for option: %c\n", (char)optopt);
+                return 1;
+            default:
+                printf("Missing arguements.\n");
+                return 1;
+        }
+    }
+
+    Matrix A = transpose_buildMatrix(y, x, verbose);
+    if (!A.empty()) {Matrix B = transpose_time(transpose_multithreaded, A, true, "Multithreaded Assign");}
+
     return 0;
 }
