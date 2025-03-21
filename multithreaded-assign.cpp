@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     }
 
     Matrix A = transpose_buildMatrix(y, x, verbose);
-    if (!A.empty()) {Matrix B = transpose_time(transpose_multithreaded, A, true, "Multithreaded Assign");}
+    if (!A.empty()) {Matrix B = transpose_time(transpose_multithreaded, A, verbose, "Multithreaded Assign");}
 
     return 0;
 }

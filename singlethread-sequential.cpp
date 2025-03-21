@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     }
 
     Matrix A = transpose_buildMatrix(y, x, verbose);
-    if (!A.empty()) {Matrix B = transpose_time(transpose_sequential, A, true, "Singlethread Sequential");}
+    if (!A.empty()) {Matrix B = transpose_time(transpose_sequential, A, verbose, "Singlethread Sequential");}
 
     return 0;
 }
