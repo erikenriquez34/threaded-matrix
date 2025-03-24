@@ -24,7 +24,7 @@ Matrix transpose_multithreaded(const Matrix& A, bool verbose) {
     vector<thread> pool;
     int column_chunk = A[0].size() / threads;
     
-    printf("[VERBOSE] ");
+    if (verbose) printf("[VERBOSE] ");
     for (int t = 0; t < threads; t++) {
         int start = t * column_chunk;
         int end = (t == threads - 1) ? A[0].size() : (t + 1) * column_chunk;
@@ -32,7 +32,7 @@ Matrix transpose_multithreaded(const Matrix& A, bool verbose) {
         if (verbose) printf("Thread %d: [%d, %d), ", (t+1), start, end);
         pool.emplace_back(transpose_worker, cref(A), ref(B), start, end);
     }
-    printf("\n");
+    if (verbose) printf("\n");
 
     for (auto& th : pool) {
         th.join();

@@ -1,12 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <chrono>
 #include <unistd.h>
-#include <thread>
+#include <unistd.h>
+#include <sys/wait.h>
 #include "transpose.h"
 
 using namespace std;
-using namespace std::chrono;
 
 void printHelp() {
     printf("Usage: ./program_name [-m rows] [-n cols] [-h]\n");
