@@ -8,7 +8,7 @@
 using namespace std;
 
 void printHelp() {
-    printf("Usage: ./program_name [-m rows] [-n cols] [-h]\n");
+    printf("Usage: ./main [-m rows] [-n cols] [-h]\n");
     printf("Options:\n");
     printf("  -m <rows>   Specify the number of rows in the matrix.\n");
     printf("  -n <cols>   Specify the number of columns in the matrix.\n");
@@ -43,5 +43,7 @@ int main(int argc, char* argv[]) {
         }
     }
     
+    printf("Run everything here\n");
+
     return 0;
 }
