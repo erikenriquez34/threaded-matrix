@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sstream>
 #include "transpose.h"
 
 using namespace std;
@@ -14,6 +15,21 @@ void printHelp() {
     printf("  -n <cols>   Specify the number of columns in the matrix.\n");
     printf("  -v          Enable verbose mode.\n");
     printf("  -h          Display this help message.\n");
+}
+
+void perfRun(const string& exe, int y, int x, bool verbose) {
+    stringstream cmd;
+
+    cmd << "perf stat -e cache-misses,cache-references ";
+    cmd << "./" << exe << " -y " << y << " -x " << x;
+    if (verbose) cmd << " -v";
+
+    if (verbose) printf("Command: %s\n", cmd.str());
+
+    int result = system(cmd.str().c_str());
+    if (result != 0) {
+        cerr << "Error: Failed to run " << exe << " via perf" << endl;
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -42,8 +58,21 @@ int main(int argc, char* argv[]) {
                 return 1;
         }
     }
+
+    if (y <= 0 || x <= 0) {
+        cerr << "Error: Matrix dimensions must be positive. Use -h for help.\n";
+        return 1;
+    }
     
-    printf("Run everything here\n");
+    vector<string> executables = {
+        "singlethread-oblivious",
+        "singlethread-sequential",
+        "multithreaded-assign"
+    };
+
+    for (const auto& exe : executables) {
+        perfRun(exe, y, x, verbose);
+    }
 
     return 0;
 }
