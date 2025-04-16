@@ -17,10 +17,10 @@ void printHelp() {
     printf("  -h          Display this help message.\n");
 }
 
-void perfRun(const string& exe, int y, int x, bool verbose) {
+void run(const string& exe, int y, int x, bool verbose) {
     stringstream cmd;
 
-    cmd << "perf stat -e cache-misses,cache-references ";
+    if (verbose) cmd << "perf stat -e cache-misses,cache-references ";
     cmd << "./" << exe << " -y " << y << " -x " << x;
     if (verbose) cmd << " -v";
 
@@ -31,6 +31,7 @@ void perfRun(const string& exe, int y, int x, bool verbose) {
         cerr << "Error: Failed to run " << exe << " via perf" << endl;
     }
 }
+
 
 int main(int argc, char* argv[]) {
     int opt, y, x;
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]) {
     };
 
     for (const auto& exe : executables) {
-        perfRun(exe, y, x, verbose);
+        run(exe, y, x, verbose);
     }
 
     return 0;
